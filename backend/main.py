@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import google.generativeai as genai
+from google import genai
 import os
 import json
 from dotenv import load_dotenv
@@ -10,8 +10,8 @@ from live_data import get_team_recent_form
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-2.5-flash-lite")
+gemini = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+GEMINI_MODEL = "gemini-2.5-flash-lite"
 
 app = FastAPI(title="World Cup AI Predictor")
 
@@ -113,7 +113,7 @@ The win_probability values must sum to 100. Write the analysis and key_factors i
 """
 
     try:
-        response = model.generate_content(prompt)
+        response = gemini.models.generate_content(model=GEMINI_MODEL, contents=prompt)
         content = response.text.strip()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Gemini API error: {str(e)}")
