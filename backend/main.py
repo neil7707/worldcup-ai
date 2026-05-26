@@ -112,11 +112,21 @@ Respond with a JSON object in this exact format (no markdown, pure JSON):
 The win_probability values must sum to 100. Write the analysis and key_factors in Traditional Chinese (繁體中文).
 """
 
-    try:
-        response = gemini.models.generate_content(model=GEMINI_MODEL, contents=prompt)
-        content = response.text.strip()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Gemini API error: {str(e)}")
+    import time
+    last_error = None
+    for attempt in range(3):
+        try:
+            response = gemini.models.generate_content(model=GEMINI_MODEL, contents=prompt)
+            content = response.text.strip()
+            break
+        except Exception as e:
+            last_error = e
+            if "503" in str(e) or "UNAVAILABLE" in str(e):
+                time.sleep(3 * (attempt + 1))
+                continue
+            raise HTTPException(status_code=500, detail=f"Gemini API error: {str(e)}")
+    else:
+        raise HTTPException(status_code=503, detail=f"Gemini 暫時繁忙，請稍後再試。({str(last_error)[:100]})")
 
     if "```" in content:
         parts = content.split("```")
