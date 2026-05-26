@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0f0a;
+  --foreground: #f0f0f0;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+.pitch-bg {
+  background: linear-gradient(135deg, #0a1a0a 0%, #0d2b0d 50%, #0a1a0a 100%);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.probability-bar {
+  transition: width 1s ease-in-out;
+}
+
+select option {
+  background: #1a2e1a;
+  color: #f0f0f0;
+}
